@@ -4,12 +4,18 @@ defmodule CameraserviceCloud do
     # get list of ips
     # seconds_in_seven_days = 604_800
     ips = File.read!("hardcodedList.txt")
+
     # start the purge of ips not seen last 7 days every hour
     ips
-    |> String.split("\n", trim: true)
-    |> Enum.map(fn x ->
-      String.split(x, " ")
+    # We split the log file, line by line
+    |> String.split("\n")
+    # Then every element of the list (a line), we split it again into two:
+    # the first part is the IP address, the rest is the time
+    |> Enum.map(fn line ->
+      String.split(line, " ", parts: 2)
     end)
+    |> tap(&IO.inspect/1)
+    # The code will work as expected upto here., from here down you will have to fix it.
     |> Enum.map(fn [a, b, c] ->
       {:ok, dt, _} = DateTime.from_iso8601(b <> "T" <> c)
       {a, dt}
